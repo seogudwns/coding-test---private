@@ -239,4 +239,19 @@ WANTED: 7977270
 # print(ord('A'),ord('Z'))
 # print([chr(i) for i in range(91,97)])
 
-print(list(map(int,input().split('+'))))
+# print(list(map(int,input().split('+'))))
+
+
+
+# for i in range(1,1000):
+#     for j in range(1,1000):
+#         if i^j^j != i:
+#             print(i,j)
+#             exit(0)
+
+# print('cle')
+
+# print(2**31)
+# print(50000*99999)
+
+

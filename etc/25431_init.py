@@ -40,4 +40,4 @@ for _ in range(Q):
     else:
         lst[arr[1]] = arr[2]
 
-# ! inital code.. 더 효율적인 방법을 찾을 필요가 있다.
+# ! inital code.. 더 효율적인 방법을 찾을 필요가 있다... segtree? 
