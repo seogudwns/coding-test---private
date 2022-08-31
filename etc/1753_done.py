@@ -110,34 +110,31 @@
 # ! 이걸로 다시 써보자.
 
 from sys import stdin
-from collections import deque
+import heapq
 
 maxi = 3000000
 
 n,m = map(int,stdin.readline().strip().split())
 
 dist = [maxi for _ in range(n+1)]
-charge = [[maxi]*(n+1) for _ in range(n+1)]
+charge = [[]*(n+1) for _ in range(n+1)]
 start = int(stdin.readline())
 dist[start] = 0
 
 for _ in range(m):
     stt,end,val = map(int,stdin.readline().strip().split())
-    charge[stt][end] = min(charge[stt][end],val)
-
-Q = deque([(start,0)])
+    charge[stt].append((val,end))
+    
+Q = [(0,start)]
 while Q:
-    stt,val = Q.popleft()
+    val,stt = heapq.heappop(Q)
     if dist[stt]<val:
         continue
-    for nex,move_v in enumerate(charge[stt]):
-        if nex == 0:
-            continue
-        
+    for move_v,nex in charge[stt]:
         next_v = move_v+val
         if dist[nex]>next_v:
             dist[nex] = next_v
-            Q.append((nex,next_v))
+            heapq.heappush(Q,(next_v,nex))
 
 for i in range(1,n+1):
     print(dist[i] if dist[i] != maxi else 'INF')
