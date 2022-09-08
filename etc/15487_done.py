@@ -199,31 +199,131 @@ print(first_dif+second_dif)
 
 
 
+# from sys import stdin
+
+
+# n = int(stdin.readline()) #n>=4
+# nums = tuple(map(int,stdin.readline().strip().split()))
+
+# if len(nums) == 4:
+#     print(nums[1]-nums[0]+nums[3]-nums[2])
+#     exit(0)
+
+# max_num = max(nums)
+# min_num = min(nums)
+
+# if max_num == min_num: #모든 수가 같다는 뜻.
+#     print(0)
+#     exit(0)
+
+# max_ind = nums.index(max_num)
+# min_ind = nums.index(min_num)
+
+# if max_ind < min_ind :
+#     first = min(nums[:max_ind])
+#     last = max(nums[min_ind+1:])
+#     # 2 ~~ 4 ~~ 1 ~~ 3 이경우 1가지..?
+# else:
+#     # ~(1)~ 1 ~(2)~ 4 ~(3)~
+#     #3가지 비교.
+#     print(2)
+
+# ! 이전꺼.. 왜 실패했더라..
+
+# from sys import stdin
+# n = int(stdin.readline())
+# lst = list(map(int,stdin.readline().strip().split()))
+
+# result = -float('inf')
+# for i in range(n-3):
+#     tmp = -lst[i]
+#     for j in range(i+1,n-2):
+#         tmp2 = tmp+lst[j]
+#         for k in range(j+1,n-1):
+#             tmp3 = tmp2-lst[k] + max(lst[k+1:])
+#             if result<tmp3:
+#                 result = tmp3
+
+# print(result)
+
+# ! init code.. dp로 푼다면..?
+
+
+# from sys import stdin
+# n = int(stdin.readline())
+# lst = list(map(int,stdin.readline().strip().split()))
+# dp = [-1000000 for _ in range(n-2)]
+# for i in range(n-3):
+#     for j in range(i+1,n-2):
+#         dp[j] = max(dp[j],lst[j]-lst[i])
+
+# maxi = max(dp)
+# j = dp.index(maxi)
+
+# rslt = -100000
+# for k in range(j+1,n-1):
+#     for l in range(k+1,n):
+#         tmp = lst[l]-lst[k]
+#         if tmp>rslt:
+#             rslt = tmp
+        
+# print(maxi+rslt)
+
+# ! O(n**2).. 여전히 매우 큰데..(시간초과) + lst[j]-lst[i] < lst[l]-lst[k]인 케이스가 고려되지 않은 코드.
+
 from sys import stdin
+n = int(stdin.readline())
+lst = list(map(int,stdin.readline().strip().split()))
+
+dp = [None for _ in range(n)]
+dp_end = [None for _ in range(n)]
+dp[0] = -1e9
+dp_end[-1] = -1e9
+minf = lst[0]
+maxf = lst[1]
+dp[1] = lst[1]-lst[0]
+for i in range(1,n-2):
+    if lst[i]-minf>dp[i-1]:
+        maxf = lst[i]
+        dp[i] = maxf-minf
+    else:
+        dp[i] = dp[i-1]
+    
+    if lst[i]<minf:
+        minf = lst[i]
+
+minl = lst[n-2]
+maxl = lst[n-1]
+
+dp_end[n-2] = lst[n-1]-lst[n-2]
+for i in range(n-2,1,-1):
+    if maxl-lst[i]>dp_end[i+1]:
+        minl = lst[i]
+        dp_end[i] = maxl-minl
+    else:
+        dp_end[i] = dp_end[i+1]
+    
+    if lst[i]>maxl:
+        maxl = lst[i]
+
+result = -1e9
+for i in range(1,n-2):
+    result = max(result,dp[i]+dp_end[i+1])
+
+# print(dp)
+# print(dp_end)
+print(int(result))
+    
+    
 
 
-n = int(stdin.readline()) #n>=4
-nums = tuple(map(int,stdin.readline().strip().split()))
 
-if len(nums) == 4:
-    print(nums[1]-nums[0]+nums[3]-nums[2])
-    exit(0)
+'''
+9 8 3 2 case.. 이런식으로 돌리는건 n!인데?
+[0,0,0,0] 
+[-9,-9,-9,-9]
+[-9,-1,-1,-1]
+[-9,-1,-4,-4]
+[-9,-1,-4,-2]
 
-max_num = max(nums)
-min_num = min(nums)
-
-if max_num == min_num: #모든 수가 같다는 뜻.
-    print(0)
-    exit(0)
-
-max_ind = nums.index(max_num)
-min_ind = nums.index(min_num)
-
-if max_ind < min_ind :
-    first = min(nums[:max_ind])
-    last = max(nums[min_ind+1:])
-    # 2 ~~ 4 ~~ 1 ~~ 3 이경우 1가지..?
-else:
-    # ~(1)~ 1 ~(2)~ 4 ~(3)~
-    #3가지 비교.
-    print(2)
+'''
