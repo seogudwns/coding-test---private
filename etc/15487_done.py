@@ -282,29 +282,29 @@ dp_end[-1] = -1e9
 minf = lst[0]
 maxf = lst[1]
 dp[1] = lst[1]-lst[0]
-for i in range(1,n-2):
-    if lst[i]-minf>dp[i-1]:
-        maxf = lst[i]
-        dp[i] = maxf-minf
+for j in range(1,n-2):
+    if lst[j]-minf>dp[j-1]:
+        maxf = lst[j]
+        dp[j] = maxf-minf
     else:
-        dp[i] = dp[i-1]
+        dp[j] = dp[j-1]
     
-    if lst[i]<minf:
-        minf = lst[i]
+    if lst[j]<minf:
+        minf = lst[j]
 
 minl = lst[n-2]
 maxl = lst[n-1]
 
 dp_end[n-2] = lst[n-1]-lst[n-2]
-for i in range(n-2,1,-1):
-    if maxl-lst[i]>dp_end[i+1]:
-        minl = lst[i]
-        dp_end[i] = maxl-minl
+for k in range(n-3,1,-1):
+    if maxl-lst[k]>dp_end[k+1]:
+        minl = lst[k]
+        dp_end[k] = maxl-minl
     else:
-        dp_end[i] = dp_end[i+1]
+        dp_end[k] = dp_end[k+1]
     
-    if lst[i]>maxl:
-        maxl = lst[i]
+    if lst[k]>maxl:
+        maxl = lst[k]
 
 result = -1e9
 for i in range(1,n-2):
