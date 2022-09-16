@@ -238,7 +238,7 @@ def make_seg_tree(idx,start,end):
 
 
 def update_seg_tree(idx,start,end,update_start,update_end,num):
-    # print('update input :',idx,start,end,update_start,update_end,num)
+    print('update input :',idx,start,end,update_start,update_end,num)
     if lazy[idx]: # [start,end] 범위 전체에 업데이트 할 것이 남아있다는 말.
         num ^= lazy[idx]
         lazy[idx] = 0
@@ -251,7 +251,7 @@ def update_seg_tree(idx,start,end,update_start,update_end,num):
         seg_tree[idx] ^= num
         # print('idx update1 :',idx,num,start)
         return
-    elif start<=update_start and update_end<=end: #탐색 bound가 업데이트할 bound를 품은 경우.
+    elif start<update_start and update_end<end: #탐색 bound가 업데이트할 bound를 품은 경우.
         if (update_end-update_start)%2 == 0:
             # print('idx update2 :',idx,num,start,end)
             seg_tree[idx] ^=num
@@ -268,15 +268,39 @@ def update_seg_tree(idx,start,end,update_start,update_end,num):
     
     update_seg_tree(2*idx,start,mid,update_start,update_end,num)
     update_seg_tree(2*idx+1,mid+1,end,update_start,update_end,num)
+    seg_tree[idx] = seg_tree[2*idx] + seg_tree[2*idx+1]
     return
 
+def get_bound(start,end,aim):
+    lst = []
+    while aim != 1:
+        if aim%2 == 0:
+            lst.append('l')
+            aim = aim//2
+        else:
+            lst.append('r')
+            aim = (aim-1)//2
+    
+    for i in lst[::-1]:
+        mid = (start+end)//2
+        if i == 'l':
+            start,end = start,mid
+        else:
+            start,end = mid+1,end
+    
+    return start,end
+
 def xor_calc(idx,start,end,calc_start,calc_end):
-    # print('xor_calc input :',idx,start,end,calc_start,calc_end)
+    print('xor_calc input :',idx,start,end,calc_start,calc_end)
     if calc_start>end or calc_end<start:
         return 0
     
     if lazy[idx]:
-        update_seg_tree(idx,start,end,calc_start,calc_end,lazy[idx]) 
+        idx_stt,idx_end = get_bound(start,end,idx)
+        need_stt = max(idx_stt,calc_start)
+        need_end = min(idx_end,calc_end)
+        update_seg_tree(idx,start,end,need_stt,need_end,0) 
+        # ! from comment : idx와 calc_start/calc_end가 불일치.. bound가 겹치는데 이를 계산해서 넣어주자.(아예 다른 함수를 구현해서 넣어준다고 한다.)
         # lazy[idx] = 0 on inner stack, calc_start와 calc_end 사이에 계산되야 할 것을 다 계산하기.
     
     if calc_start <= start and end <= calc_end:
@@ -293,12 +317,12 @@ for _ in range(cases):
     order = tuple(map(int,stdin.readline().strip().split()))
     if order[0] == 1:
         update_seg_tree(1,start,end,order[1],order[2],order[3])
-        # print(seg_tree)
-        # print(lazy)
+        print(seg_tree)
+        print(lazy)
     else:
         print(xor_calc(1,start,end,order[1],order[2]))
-        # print(seg_tree)
-        # print(lazy)
+        print(seg_tree)
+        print(lazy)
 
 # ! lazy의 정의를 명확하게 할 필요가 있다.. 그냥 계산이 되야하는게 아니고, start와 end에 묶여있는 것만 남겨야한다. 
 # ! ex. 3~4에 남아있는데 2~3을 구할 때는 3~4가 쪼개지지 않고, 따라서 게산되지 않음. --> 계산되는데..?.. 
