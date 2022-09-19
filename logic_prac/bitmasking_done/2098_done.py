@@ -1,3 +1,5 @@
+# # https://www.acmicpc.net/problem/2098
+
 n = int(input())
 graph = [tuple(map(int,input().strip().split())) for _ in range(n)]
 

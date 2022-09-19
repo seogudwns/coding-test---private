@@ -1,52 +1,52 @@
-from itertools import combinations
-from sys import stdin
+# from itertools import combinations
+# from sys import stdin
 
-N,K = map(int,stdin.readline().strip().split())
+# N,K = map(int,stdin.readline().strip().split())
 
-lst = [set(map(ord,stdin.readline().strip()[4:-4])) for _ in range(N)]
-#각 단어에서 앞뒤 4글자를 제외한 글자들을 쪼개서 아스키코드로 변경, 겹치는 것을 제거하기 위해 set.
+# lst = [set(map(ord,stdin.readline().strip()[4:-4])) for _ in range(N)]
+# #각 단어에서 앞뒤 4글자를 제외한 글자들을 쪼개서 아스키코드로 변경, 겹치는 것을 제거하기 위해 set.
 
-if K<5:
-    print(0)
-    exit(0)
-elif K == 26:
-    print(N)
-    exit(0)
-# 최소 알아야하는 글자 = a,n,t,i,c. 그리고 모든 글자를 알려주면 모든 단어를 알려주는 것과 같으니 두번째가 있으면 시간이 약간 줄겠지?
+# if K<5:
+#     print(0)
+#     exit(0)
+# elif K == 26:
+#     print(N)
+#     exit(0)
+# # 최소 알아야하는 글자 = a,n,t,i,c. 그리고 모든 글자를 알려주면 모든 단어를 알려주는 것과 같으니 두번째가 있으면 시간이 약간 줄겠지?
 
-know = {ord('a'),ord('n'),ord('t'),ord('i'),ord('c')}
-# alp_except_know = set([i for i in range(97,123)]) #ord('a') = 97, ord('z') = 122
-# for i in know:
-#     alp_except_know.remove(i)
+# know = {ord('a'),ord('n'),ord('t'),ord('i'),ord('c')}
+# # alp_except_know = set([i for i in range(97,123)]) #ord('a') = 97, ord('z') = 122
+# # for i in know:
+# #     alp_except_know.remove(i)
     
-# print('know = ',know)
-K -= 5
-#know가 5 이상이니 5글자를 배웠다고 판단.
+# # print('know = ',know)
+# K -= 5
+# #know가 5 이상이니 5글자를 배웠다고 판단.
 
-for i in range(len(lst)):
-    lst[i] = lst[i] - know
+# for i in range(len(lst)):
+#     lst[i] = lst[i] - know
 
-cnt = lst.count(set())
+# cnt = lst.count(set())
 
-for i in lst:
-    if len(i) == 0:
-        lst.remove(i)
-    elif len(i) > K:
-        lst.remove(i)
+# for i in lst:
+#     if len(i) == 0:
+#         lst.remove(i)
+#     elif len(i) > K:
+#         lst.remove(i)
 
-# lst의 글자중 know에 있는 글자들 제거.
-# antic로만 만들어진 단어 제거 및 cnt에 추가.
-# 정렬된 단어중 글자의 갯수가 K보다 많으면 제거. 검사케이스 줄이기.
-# print(lst)
+# # lst의 글자중 know에 있는 글자들 제거.
+# # antic로만 만들어진 단어 제거 및 cnt에 추가.
+# # 정렬된 단어중 글자의 갯수가 K보다 많으면 제거. 검사케이스 줄이기.
+# # print(lst)
 
-total_lst = set().union(*lst)
-# check = combinations(total_lst,K)
+# total_lst = set().union(*lst)
+# # check = combinations(total_lst,K)
 
-result = 0
-for i in combinations(total_lst,K):
-    result = max(result, len(['' for subset in lst if subset & set(i) == subset]))
+# result = 0
+# for i in combinations(total_lst,K):
+#     result = max(result, len(['' for subset in lst if subset & set(i) == subset]))
     
-print(result+cnt)
+# print(result+cnt)
 
 # print(lst) 
 # print(total_lst)
@@ -89,3 +89,39 @@ print(result+cnt)
 
 # 시간 초과.. 2가지 경우중 하나, 혹은 둘 다.
 
+# ! 위에꺼는 아마 시간초과가 떠서 안했겠지?
+
+from sys import stdin
+from itertools import combinations
+
+N,K = map(int,stdin.readline().strip().split())
+words = set()
+lst = []
+for _ in range(N):
+    arr = stdin.readline().strip()
+    arr = {ord(i)-97 for i in arr}
+    words.update(arr)
+    lst.append(arr^{0,2,8,13,19})
+
+if K<5:
+    print(0)
+    exit(0)
+    
+K -= 5
+words ^= {0,2,8,13,19}
+words = list(words)
+last = 0
+
+print(words)
+print(lst)
+
+def backt(words,start,lst,get,result,K):
+    if K == 0:
+        global last
+        if last<result:
+            last = result
+        return
+    
+    for i in range(start,len(words)):
+        get.append(words)
+        
