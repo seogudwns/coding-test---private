@@ -98,30 +98,29 @@ N,K = map(int,stdin.readline().strip().split())
 words = set()
 lst = []
 for _ in range(N):
-    arr = stdin.readline().strip()
-    arr = {ord(i)-97 for i in arr}
+    arr = {ord(i)-97 for i in stdin.readline().strip()}
     words.update(arr)
     lst.append(arr^{0,2,8,13,19})
 
-if K<5:
+if K < 5:
     print(0)
     exit(0)
-    
+elif K == 26 or len(words)<K:
+    print(N)
+    exit(0)
+
 K -= 5
 words ^= {0,2,8,13,19}
-words = list(words)
 last = 0
 
-print(words)
-print(lst)
-
-def backt(words,start,lst,get,result,K):
-    if K == 0:
-        global last
-        if last<result:
-            last = result
-        return
+for i in combinations(words,K):
+    seti = set(i)
+    cnt = 0
+    for j in lst:
+        if j & seti == j:
+            cnt += 1
     
-    for i in range(start,len(words)):
-        get.append(words)
-        
+    if last < cnt:
+        last = cnt
+
+print(last)
