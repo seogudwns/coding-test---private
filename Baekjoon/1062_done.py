@@ -91,36 +91,85 @@
 
 # ! 위에꺼는 아마 시간초과가 떠서 안했겠지?
 
+# from sys import stdin
+# from itertools import combinations
+
+# N,K = map(int,stdin.readline().strip().split())
+# words = set()
+# lst = []
+# for _ in range(N):
+#     arr = {ord(i)-97 for i in stdin.readline().strip()}
+#     words.update(arr)
+#     lst.append(arr^{0,2,8,13,19})
+
+# if K < 5:
+#     print(0)
+#     exit(0)
+# elif K == 26 or len(words)<K:
+#     print(N)
+#     exit(0)
+
+# K -= 5
+# words ^= {0,2,8,13,19}
+# last = 0
+
+# for i in combinations(words,K):
+#     seti = set(i)
+#     cnt = 0
+#     for j in lst:
+#         if j & seti == j:
+#             cnt += 1
+    
+#     if last < cnt:
+#         last = cnt
+
+# print(last)
+
+# ! 개선.(bitmasking 교육하면서 update.)
+
+
 from sys import stdin
 from itertools import combinations
 
 N,K = map(int,stdin.readline().strip().split())
-words = set()
-lst = []
-for _ in range(N):
-    arr = {ord(i)-97 for i in stdin.readline().strip()}
-    words.update(arr)
-    lst.append(arr^{0,2,8,13,19})
+words = []
+total = set()
 
-if K < 5:
+for _ in range(N):
+    arr = stdin.readline().strip()
+    tmp = 0
+  
+    for i in arr:
+        tmp2 = 2**(ord(i)-97)
+        if tmp2 in {1,4,2**13,2**8,2**19}:
+            continue
+        if tmp2 & tmp == 0 :
+            tmp += tmp2
+            total.add(tmp2)
+    
+    words.append(tmp)
+
+if K<5:
     print(0)
     exit(0)
-elif K == 26 or len(words)<K:
+if K == 26 or len(total)<=K-5:
     print(N)
     exit(0)
 
 K -= 5
-words ^= {0,2,8,13,19}
-last = 0
 
-for i in combinations(words,K):
-    seti = set(i)
-    cnt = 0
-    for j in lst:
-        if j & seti == j:
-            cnt += 1
+result = 0
+for i in combinations(total,K):
+    num = sum(i)
+    if bin(num).count('1')>K:
+        continue
     
-    if last < cnt:
-        last = cnt
+    cnt = 0
+    for i in words:
+        if i & num == i:
+            cnt += 1
+            
+    if result<cnt:
+        result = cnt
 
-print(last)
+print(result)
